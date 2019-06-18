@@ -19,13 +19,20 @@ import RPi.GPIO as GPIO
 import time
 import os
 
+# use BCM numbering
 GPIO.setmode(GPIO.BCM)
+
+# Make sure GPIO 18 stays high, to prevent floating low and resetting the GPG3
+GPIO.setup(18, GPIO.OUT, initial=GPIO.HIGH)
+
+# Set power signal line from GPG3 as input with pulldown
 GPIO.setup(22, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
-GPIO.setup(23, GPIO.OUT)
-GPIO.output(23, True)
+# Set power signal line to GPG3 as output high
+GPIO.setup(23, GPIO.OUT, initial=GPIO.HIGH)
 
 while True:
+    # Shutdown at the request of the GPG3
     if GPIO.input(22):
         os.system("shutdown now -h")
     time.sleep(0.1)
